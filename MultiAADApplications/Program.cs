@@ -12,31 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddAuthentication(options =>
     {
-        options.DefaultScheme = "SantaWeb_OR_SantaWeb2";
-        options.DefaultChallengeScheme = "SantaWeb_OR_SantaWeb2";
+        options.DefaultScheme = "AzureAD1_OR_AzureAD2";
+        options.DefaultChallengeScheme = "AzureAD1_OR_AzureAD2";
     })
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("SantaWeb"));
-
-// builder.Services.AddAuthentication()
-//     .AddMicrosoftIdentityWebApp(, openIdConnectScheme: "OpenIdConnect2", cookieScheme: "Cookies2");
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAD1"));
 
 builder.Services.AddAuthentication()
-    .AddMicrosoftIdentityWebApp(options =>
-    {
-        var aadOptions = new MicrosoftIdentityOptions();
-        builder.Configuration.GetSection("SantaWeb2").Bind(aadOptions);
-
-        options.TenantId = aadOptions.TenantId;
-        options.Instance = aadOptions.Instance;
-        options.ClientSecret = aadOptions.ClientSecret;
-        options.ClientId = aadOptions.ClientId;
-        options.UsePkce = aadOptions.UsePkce;
-        options.ResponseType = aadOptions.ResponseType;
-        options.CallbackPath = aadOptions.CallbackPath;
-    }, openIdConnectScheme: "OpenIdConnect2", cookieScheme: "Cookies2");
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAD2"), openIdConnectScheme: "OpenIdConnect2",
+        cookieScheme: "Cookies2");
 
 builder.Services.AddAuthentication()
-    .AddPolicyScheme("SantaWeb_OR_SantaWeb2", "SantaWeb_OR_SantaWeb2", options =>
+    .AddPolicyScheme("AzureAD1_OR_AzureAD2", "AzureAD1_OR_AzureAD2", options =>
     {
         options.ForwardDefaultSelector = context =>
         {
